@@ -1,0 +1,412 @@
+{
+ "version": 1,
+ "note": [
+  "Hand-written and reviewable, for the same reason the sibling's class table is:",
+  "a wrong entry silently reports 'no slack', and nothing catches it. A table can",
+  "be read. Every entry carries a worked example saying what the stronger",
+  "statement is, so a reviewer can disagree with a specific claim rather than with",
+  "a list of names.",
+  "",
+  "`stronger_arg` is the index, among the root constant's EXPLICIT binders, of the",
+  "argument whose inferred type IS the stronger statement. Explicit binders rather",
+  "than raw application positions, because the raw position moves with implicit",
+  "insertion and is unreviewable; the metaprogram resolves the mapping from the",
+  "constant's own type.",
+  "",
+  "`witness_arg`, where present, is the explicit argument holding the object the",
+  "statement existentially quantifies away. That is stage 2's input.",
+  "",
+  "Every entry is checked to exist, with the arity claimed, at the pinned",
+  "revision, by tools/check_table.py. An entry naming a constant that does not",
+  "resolve is an error, never a silent miss.",
+  "",
+  "`sibling_patterns` are (stated, stronger) substitutions applied to the THEOREM's own name to guess what its sharper sibling would be called. A name match is a nomination, not a duplicate: it is weaker evidence than the defeq search, and a substitution that yields the theorem's own name unchanged is discarded rather than reported. An empty list means the entry has no naming convention worth guessing at -- `Or.inl` and `And.left` do not, and inventing one would report siblings that are not there.",
+  "",
+  "`produces` says what the selected argument is. `proposition` means the argument's type is a stronger statement and the row belongs to stage 1. `witness` means the argument is DATA -- an element, not a proof -- so the strengthened declaration is a `def` and the row belongs to stage 2. All six `Nonempty.intro` rows in the first fifty came back not-a-Prop, six of six, which is a property of the entry rather than of those rows. `Exists.intro` stays `proposition` because its `stronger_arg` selects the proof `p w` and not the witness `w`; `witness_arg` is where stage 2 reads the object."
+ ],
+ "entries": [
+  {
+   "root": "le_of_lt",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a < b  =>  a <= b",
+   "example": "A `calc` block closing with `le_of_lt h`. The proof established the strict inequality and the statement asks only for the weak one. Expected to be the single most common root, and expected to be mostly `duplicate`: the weak form is the one downstream uses.",
+   "sibling_patterns": [
+    [
+     "_le",
+     "_lt"
+    ],
+    [
+     "_le_",
+     "_lt_"
+    ],
+    [
+     "le_",
+     "lt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "LT.lt.le",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a < b  =>  a <= b",
+   "example": "The dot-notation spelling of the entry above, written `h.le`. A separate constant, so it needs its own row; omitting it would report every `h.le` proof as having no slack.",
+   "sibling_patterns": [
+    [
+     "_le",
+     "_lt"
+    ],
+    [
+     "_le_",
+     "_lt_"
+    ],
+    [
+     "le_",
+     "lt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "le_of_eq",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a = b  =>  a <= b",
+   "example": "A bound proved by computing the quantity exactly and then forgetting the equality. The narrow bucket's best source among the order entries: an exact value is a different theorem from a bound.",
+   "sibling_patterns": [
+    [
+     "_le",
+     "_eq"
+    ],
+    [
+     "_le_",
+     "_eq_"
+    ],
+    [
+     "le_",
+     "eq_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Eq.le",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a = b  =>  a <= b",
+   "example": "The dot spelling, `h.le` where `h : a = b`. Distinct from `LT.lt.le` despite the identical surface syntax -- which is exactly why the table matches on the resolved constant and never on the source text.",
+   "sibling_patterns": [
+    [
+     "_le",
+     "_eq"
+    ],
+    [
+     "_le_",
+     "_eq_"
+    ],
+    [
+     "le_",
+     "eq_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Eq.ge",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a = b  =>  a >= b",
+   "example": "As `Eq.le`, on the other side. Both directions are listed because a proof that reaches an equality and states one inequality is the same finding whichever way it is oriented.",
+   "sibling_patterns": [
+    [
+     "_ge",
+     "_eq"
+    ],
+    [
+     "_ge_",
+     "_eq_"
+    ],
+    [
+     "ge_",
+     "eq_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "ne_of_gt",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a > b  =>  a != b",
+   "example": "A non-vanishing lemma whose proof shows positivity. `x != 0` stated, `0 < x` proved -- and the sign is real information the statement drops. A likely narrow-bucket row.",
+   "sibling_patterns": [
+    [
+     "_ne",
+     "_gt"
+    ],
+    [
+     "_ne_",
+     "_gt_"
+    ],
+    [
+     "ne_",
+     "gt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "ne_of_lt",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a < b  =>  a != b",
+   "example": "The mirror of the above.",
+   "sibling_patterns": [
+    [
+     "_ne",
+     "_lt"
+    ],
+    [
+     "_ne_",
+     "_lt_"
+    ],
+    [
+     "ne_",
+     "lt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "LT.lt.ne",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a < b  =>  a != b",
+   "example": "Dot spelling of `ne_of_lt`.",
+   "sibling_patterns": [
+    [
+     "_ne",
+     "_lt"
+    ],
+    [
+     "_ne_",
+     "_lt_"
+    ],
+    [
+     "ne_",
+     "lt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "LT.lt.ne'",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a < b  =>  b != a",
+   "example": "Dot spelling giving the reversed disequality. Listed separately because the stronger statement is the same but the stated one is not, and the duplicate check must compare against the right sibling.",
+   "sibling_patterns": [
+    [
+     "_ne",
+     "_lt"
+    ],
+    [
+     "_ne'",
+     "_lt"
+    ],
+    [
+     "ne_",
+     "lt_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Or.inl",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a  =>  a \\/ b",
+   "example": "A disjunction that is always the left disjunct. The stronger statement drops the disjunction entirely. Rare at the root of a real theorem and interesting when it happens, because it says a case split in the statement never had two cases.",
+   "sibling_patterns": [],
+   "produces": "proposition"
+  },
+  {
+   "root": "Or.inr",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "b  =>  a \\/ b",
+   "example": "The mirror of the above.",
+   "sibling_patterns": [],
+   "produces": "proposition"
+  },
+  {
+   "root": "And.left",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a /\\ b  =>  a",
+   "example": "The proof produced a conjunction and the statement keeps one half. Distinguish carefully from the case where the conjunction came from another lemma: then the second half is not this proof's contribution, and the row is a restatement of that lemma rather than a finding here.",
+   "sibling_patterns": [],
+   "produces": "proposition"
+  },
+  {
+   "root": "And.right",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a /\\ b  =>  b",
+   "example": "The mirror of the above.",
+   "sibling_patterns": [],
+   "produces": "proposition"
+  },
+  {
+   "root": "Exists.intro",
+   "explicit_arity": 2,
+   "stronger_arg": 1,
+   "witness_arg": 0,
+   "shape": "p w  =>  exists x, p x",
+   "example": "The whole of stage 2. The statement says a thing exists; the proof names it. The stronger statement is `p w` for the specific `w`, and `w` itself may be a new object the library never named. Expect most of these to be `Classical.choose` or an existential inherited from another lemma, in which case the witness is not new -- which is a measurement, not an assumption.",
+   "sibling_patterns": [],
+   "produces": "proposition"
+  },
+  {
+   "root": "Nonempty.intro",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "a : A  =>  Nonempty A",
+   "example": "`Nonempty` erases the element into a `Prop`. The proof carries the element. Same shape as `Exists.intro` and the same stage-2 question.",
+   "sibling_patterns": [],
+   "produces": "witness"
+  },
+  {
+   "root": "Filter.Eventually.of_forall",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "forall x, p x  =>  eventually p in f",
+   "example": "The statement holds eventually along a filter; the proof holds everywhere. A genuinely different theorem, and one of the clearest narrow-bucket shapes in the table.",
+   "sibling_patterns": [
+    [
+     "_eventually",
+     "_forall"
+    ],
+    [
+     "eventually_",
+     "forall_"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "StrictMono.monotone",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "StrictMono f  =>  Monotone f",
+   "example": "Stated monotone, proved strictly monotone. The classic hand-written instance of this project's question, and the reason to expect the order entries not to be uniformly dull.",
+   "sibling_patterns": [
+    [
+     "monotone",
+     "strictMono"
+    ],
+    [
+     "mono",
+     "strictMono"
+    ],
+    [
+     "Monotone",
+     "StrictMono"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "StrictMonoOn.monotoneOn",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "StrictMonoOn f s  =>  MonotoneOn f s",
+   "example": "The `On` variant. Listed because the sibling's experience is that a table which lists the unrestricted form and forgets the restricted one reports the restricted proofs as having no slack.",
+   "sibling_patterns": [
+    [
+     "monotoneOn",
+     "strictMonoOn"
+    ],
+    [
+     "MonotoneOn",
+     "StrictMonoOn"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Differentiable.continuous",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "Differentiable f  =>  Continuous f",
+   "example": "A continuity statement whose proof differentiates. The stronger statement is a different theorem about the same function, and the analysis areas are where the sibling found its highest rates.",
+   "sibling_patterns": [
+    [
+     "continuous",
+     "differentiable"
+    ],
+    [
+     "Continuous",
+     "Differentiable"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Continuous.continuousAt",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "Continuous f  =>  ContinuousAt f x",
+   "example": "Pointwise stated, globally proved. Expected to be very often `duplicate`, since the global form is usually right there -- and that duplicate rate is itself the API-design measurement the project reports.",
+   "sibling_patterns": [
+    [
+     "continuousAt",
+     "continuous"
+    ],
+    [
+     "ContinuousAt",
+     "Continuous"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Function.Bijective.injective",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "Bijective f  =>  Injective f",
+   "example": "Injectivity stated, bijectivity proved. Surjectivity is then free and unstated.",
+   "sibling_patterns": [
+    [
+     "injective",
+     "bijective"
+    ],
+    [
+     "Injective",
+     "Bijective"
+    ]
+   ],
+   "produces": "proposition"
+  },
+  {
+   "root": "Function.Bijective.surjective",
+   "explicit_arity": 1,
+   "stronger_arg": 0,
+   "shape": "Bijective f  =>  Surjective f",
+   "example": "The mirror of the above.",
+   "sibling_patterns": [
+    [
+     "surjective",
+     "bijective"
+    ],
+    [
+     "Surjective",
+     "Bijective"
+    ]
+   ],
+   "produces": "proposition"
+  }
+ ]
+}

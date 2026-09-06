@@ -1,0 +1,61 @@
+{
+  "note": [
+    "Hand-written. These are readings of individual candidates by a person, and",
+    "they are kept in their own file, marked as judgement, because a judgement",
+    "that looks like a measurement is what cost the sibling project a published",
+    "correlation of +0.92 that was actually +0.73.",
+    "",
+    "restatement -- the stronger form is a sibling the library states, or one a",
+    "              reader grants on sight",
+    "narrow      -- a different theorem: the proof was about something else",
+    "artefact    -- the tool is wrong about this row",
+    "witness     -- the proof names an object the statement quantifies away;",
+    "              stage 2's material rather than a stronger proposition",
+    "",
+    "A row absent from this file was NOT read. Unread is not the same as clean."
+  ],
+  "verdicts": {
+    "Real.log_surjective": ["restatement", "the witness is `exp` and the stronger statement IS `Real.log_exp`, which the library states one file away. Caught by the duplicate check, which is the outcome that validates it"],
+    "Real.monotoneOn_sin": ["restatement", "`Real.strictMonoOn_sin` exists. This is BRIEF.md's own failing condition -- the sharper sibling on the next line -- and it was caught rather than reported"],
+    "NNReal.HolderTriple.ne_zero": ["restatement", "`HolderTriple.pos` exists"],
+    "Real.goldenConj_ne_zero": ["restatement", "`Real.goldenConj_neg` exists"],
+    "continuousAt_id": ["restatement", "`continuous_id` is one of the most cited lemmas in Mathlib; a reader grants this on sight"],
+    "MulOpposite.unop_injective": ["restatement", "bijectivity of `unop` is not news"],
+    "ModuleCat.hom_injective": ["restatement", "same shape"],
+    "SemimoduleCat.hom_surjective": ["restatement", "same shape"],
+    "uniformEquicontinuous_empty": ["restatement", "true but vacuous: the index type is empty, so the unfolded form carries nothing the statement did not"],
+
+    "Cardinal.mk_le_of_injective": ["narrow", "the statement is a cardinal inequality; the proof constructs an explicit embedding `α ↪ β`. The embedding is the content and the statement discards it"],
+    "Finset.HasAntidiagonal.nonempty_antidiagonal": ["narrow", "states that the antidiagonal is nonempty, proves that `(0, a)` is in it. Naming the element is strictly more useful than asserting one exists"],
+    "Height.mulHeight₁_nonneg": ["narrow", "`0 ≤ h x` stated, `0 < h x` proved. Strict positivity of a height is a different fact from non-negativity"],
+    "Polynomial.ne_natDegree_of_mem_eraseLead_support": ["narrow", "`a ≠ natDegree f` stated, `a < natDegree f` proved. The order relation is real information the disequality drops"],
+    "PMF.tsum_coe_indicator_ne_top": ["narrow", "`≠ ⊤` stated, `< ⊤` proved"],
+    "Multiset.powerset_mono": ["narrow", "Monotone stated, StrictMono proved, and no `strictMono` sibling was found in the module"],
+    "continuous_descPochhammer_eval": ["narrow", "continuity stated, differentiability proved. A different theorem about the same function"],
+    "Isometry.mapsTo_eball": ["narrow", "`MapsTo` stated, an equality of preimages proved"],
+    "Filter.tendsto_swap4_prod": ["narrow", "`Tendsto` stated, an equality of pushforward filters proved"],
+    "Finset.EquitableOn.le": ["narrow", "a one-sided bound stated, the two-sided bound proved"],
+    "sum_col_of_mem_doublyStochastic": ["narrow", "column sums stated, rows AND columns proved"],
+    "Ordnode.Valid.merge": ["narrow", "validity stated, validity together with the size identity proved"],
+    "RootPairing.chainBotCoeff_chainTopIdx": ["narrow", "one identity stated, two proved"],
+
+    "Nat.sInf_empty": ["artefact", "states `sInf ∅ = 0`, offers `∅ = ∅`. Wrapper stripping cut the chain; the statement is true and unrelated. Now caught as `unchained`"],
+    "EuclideanGeometry.dist_orthogonalProjection_eq_of_oangle_eq": ["artefact", "states an equality of distances, offers one of angles. Same cause, five layers of wrappers"],
+    "ne_of_ssuperset": ["artefact", "states `b ⊂ a → a ≠ b` and offers `b ⊂ a → b ⊂ a`. The selected argument is the hypothesis itself, so the stronger statement restates an assumption"],
+
+    "RatFunc.denom_inv_dvd": ["narrow", "divisibility stated, the exact formula for the inverse proved. Genuinely wanted, and `unchained`: true and verified, but the chain to the stated theorem is not established by the table"],
+    "Cardinal.natCast_lt_aleph0": ["narrow", "`↑n < ℵ₀` stated, `Fin (n+1) ↪ ℕ` proved. Also `unchained`, and also real"],
+    "Module.Relations.Solution.IsPresentation.surjective_π": ["narrow", "surjectivity of one map stated, bijectivity of a related map proved. `unchained`"],
+    "Matroid.IsCircuit.sdiff_singleton_isBasis": ["artefact", "`unchained`, and on reading, unrelated"],
+
+    "NormedAlgebra.Complex.nonempty_algEquiv": ["witness", "Gelfand-Mazur: `Nonempty (ℂ ≃ₐ[ℂ] F)` stated, the equivalence itself constructed. The canonical isomorphism is an object nobody named here"],
+    "LTSeries.nonempty_of_infiniteDimensionalOrder": ["witness", "`Nonempty α` stated, an element produced"],
+    "CategoryTheory.GrothendieckTopology.OneHypercover.instNonempty": ["witness", "a hypercover is constructed and then forgotten"],
+    "FirstOrder.Language.Theory.simpleGraph_isSatisfiable": ["witness", "satisfiability stated, an actual model produced"],
+    "CategoryTheory.SmallCategoryCardinalLT.exists_equivalence": ["witness", "an explicit small category is built and existentially hidden"],
+    "HomotopicalAlgebra.Cylinder.LeftHomotopy.exists_good_cylinder": ["witness", "the good cylinder is constructed"],
+    "isBoundedUnder_le_finset_sup'": ["narrow", "boundedness stated, an explicit eventual bound proved"],
+    "CategoryTheory.section_comp_right": ["narrow", "one composition identity stated, both proved -- though the witness goes through `Classical.choose`, which stage 2 will classify as noncomputable"],
+    "LinearOrderedAddCommGroup.Subgroup.negGen_neg": ["narrow", "negativity of the generator stated, negativity together with the generation property proved; also via `Classical.choose`"]
+  }
+}

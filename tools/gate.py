@@ -1,0 +1,214 @@
+#!/usr/bin/env python3
+"""Sample candidates for the fifty-candidate gate, and format them for reading.
+
+BRIEF.md, Part 1 step 4: *read fifty candidates by hand. If they are all
+`le_of_lt` closing a `calc` block with the `_lt` sibling on the next line of the
+file, stop here, having cost an afternoon, and write down why.*
+
+The sample is stratified by root constant, not uniform. A uniform sample of a
+distribution dominated by one root is fifty rows about that root, which answers
+the question the gate is asking only if the answer is the discouraging one. The
+gate has to be able to come back positive, so every table entry that fired gets
+at least one row and the remainder is filled proportionally.
+
+This tool decides nothing. It prints rows and a person reads them.
+"""
+
+from __future__ import annotations
+
+import argparse
+import collections
+import json
+import random
+import sys
+from pathlib import Path
+
+
+def stratified(rows: list[dict], size: int, seed: int) -> list[dict]:
+    by_root = collections.defaultdict(list)
+    for row in rows:
+        by_root[row["root"]].append(row)
+    rng = random.Random(seed)
+    for bucket in by_root.values():
+        rng.shuffle(bucket)
+
+    picked, taken = [], collections.Counter()
+    # One from every root that fired, first: a root with three occurrences is
+    # the most likely place for the narrow bucket to be, and proportional
+    # sampling would never show it.
+    for root, bucket in sorted(by_root.items()):
+        picked.append(bucket[0])
+        taken[root] = 1
+    # Then proportionally, largest remainder, until the sample is full.
+    total = len(rows)
+    while len(picked) < size:
+        candidates = [(len(b) / total, r) for r, b in by_root.items()
+                      if taken[r] < len(b)]
+        if not candidates:
+            break
+        candidates.sort(reverse=True)
+        weights = [c[0] for c in candidates]
+        root = rng.choices([c[1] for c in candidates], weights=weights, k=1)[0]
+        picked.append(by_root[root][taken[root]])
+        taken[root] += 1
+    return picked[:size]
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("candidates", type=Path)
+    parser.add_argument("--size", type=int, default=50)
+    parser.add_argument("--seed", type=int, default=20260903)
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--verdicts", type=Path,
+                        help="hand-written readings; kept in their own file and "
+                             "labelled as judgement, never mixed with the counts")
+    parser.add_argument("--pairs-out", type=Path,
+                        help="write the sample as {decl, which, module} for a single "
+                             "detail run, so fifty candidates cost one Mathlib import")
+    parser.add_argument("--details", type=Path,
+                        help="jsonl from `traverse.py detail --pairs`, so the reader "
+                             "sees the statements rather than a root name")
+    parser.add_argument("--population", required=True,
+                        help="stated in the document's caption; there is no default "
+                             "because a table without its population is the "
+                             "mistake this project is built to avoid")
+    args = parser.parse_args()
+
+    print(f"# read {args.candidates}", file=sys.stderr)
+    rows = [json.loads(line) for line in args.candidates.read_text().splitlines() if line.strip()]
+    if not rows:
+        raise SystemExit(f"{args.candidates}: no rows. An empty input is not an empty result.")
+
+    details = {}
+    if args.details:
+        if not args.details.exists():
+            raise SystemExit(
+                f"{args.details}: missing. Refusing to render the gate without the "
+                "statements it exists to show -- a document that says 'no detail "
+                "computed' fifty times is one a reader can still draw a conclusion "
+                "from, and the conclusion would be about this tool.")
+        for line in args.details.read_text().splitlines():
+            if line.strip():
+                row = json.loads(line)
+                details[row["decl"]] = row
+        print(f"# read {args.details}", file=sys.stderr)
+
+    hand = {}
+    if args.verdicts and args.verdicts.exists():
+        hand = json.loads(args.verdicts.read_text())["verdicts"]
+        print(f"# read {args.verdicts}", file=sys.stderr)
+
+    sample = stratified(rows, args.size, args.seed)
+    roots = collections.Counter(r["root"] for r in rows)
+    sampled = collections.Counter(r["root"] for r in sample)
+    areas = collections.Counter(r.get("area", "?") for r in rows)
+
+    out = [f"# The fifty-candidate gate\n",
+           f"**population: {args.population}**\n",
+           f"Sampled {len(sample)} of {len(rows)} matched candidates, stratified by "
+           f"root constant, seed {args.seed}. Every root that fired appears at least "
+           f"once; the remainder is proportional. Generated by `tools/gate.py`; "
+           f"nothing here is decided by a tool.\n",
+           "## What fired, and how often\n",
+           "| root | in full set | in sample |", "|---|---:|---:|"]
+    for root, count in roots.most_common():
+        out.append(f"| `{root}` | {count} | {sampled[root]} |")
+    out.append("\n## Areas of the full matched set\n")
+    out.append("| area | matched |")
+    out.append("|---|---:|")
+    for area, count in areas.most_common():
+        out.append(f"| {area} | {count} |")
+    if hand:
+        import collections as _c
+        read = [r for r in sample if r["decl"] in hand]
+        tally = _c.Counter(hand[r["decl"]][0] for r in read)
+        out.append("\n## The verdict\n")
+        out.append("**These readings are hand-written judgements, not measurements.** "
+                   "They live in `docs/gate-verdicts.json` and are labelled there, "
+                   "because a judgement that looks like a measurement is what cost "
+                   "the sibling project a published correlation.\n")
+        out.append(f"Read: **{len(read)} of {len(sample)}**. The rest were not read, "
+                   "and unread is not the same as clean.\n")
+        out.append("| reading | rows | meaning |")
+        out.append("|---|---:|---|")
+        for name, meaning in [
+                ("narrow", "a different theorem: the proof was about something else"),
+                ("restatement", "a sibling the library states, or one granted on sight"),
+                ("witness", "the proof names an object the statement quantifies away"),
+                ("artefact", "the tool is wrong about this row")]:
+            out.append(f"| **{name}** | {tally.get(name, 0)} | {meaning} |")
+        out.append("")
+        out.append("`BRIEF.md`: *if they are all `le_of_lt` closing a `calc` block "
+                   "with the `_lt` sibling on the next line of the file, stop here, "
+                   "having cost an afternoon, and write down why.*\n")
+        if tally.get("narrow", 0) + tally.get("witness", 0) > 0:
+            out.append(f"**They are not.** {tally.get('narrow', 0)} rows state one "
+                       f"theorem and prove a different one, and {tally.get('witness', 0)} "
+                       "name an object the statement hides. The stop condition is not "
+                       "met and Part 1 continues.\n")
+        else:
+            out.append("**They are.** The stop condition is met.\n")
+
+    out.append("\n## The fifty\n")
+    out.append("Read each one and mark it **restatement** (the stronger form is a "
+               "sibling the library already states, or one a reader grants on sight), "
+               "**narrow** (a different theorem), or **artefact** (the tool is "
+               "wrong).\n")
+    out.append("`BRIEF.md` sets the failing condition: *if they are all `le_of_lt` "
+               "closing a `calc` block with the `_lt` sibling on the next line of the "
+               "file, stop here, having cost an afternoon, and write down why.*\n")
+    for i, row in enumerate(sample, 1):
+        detail = details.get(row["decl"], {})
+        out.append(f"### {i}. `{row['decl']}`\n")
+        out.append(f"- module: `{row.get('module')}`")
+        out.append(f"- root: `{row['root']}` ({row['entry']['shape']}), "
+                   f"wrappers stripped: {row.get('layers')}")
+        if detail.get("stated"):
+            out.append(f"\n**states**\n```lean\n{detail['stated'].strip()}\n```\n")
+            out.append(f"**proves**\n```lean\n{detail['stronger'].strip()}\n```\n")
+            siblings = detail.get("siblings") or []
+            if siblings:
+                out.append(f"- already in the library as: "
+                           + ", ".join(f"`{n}`" for n in siblings))
+            if detail.get("defeq_to_stated"):
+                out.append("- **defeq to what it states** -- an elaboration artefact, "
+                           "not a finding")
+            out.append(f"- kernel accepted the strengthened form: "
+                       f"`{detail.get('verify')}`")
+        elif detail:
+            out.append(f"\n- no detail: {detail.get('why', 'unknown')}")
+        else:
+            out.append("\n- no detail computed")
+        if row["decl"] in hand:
+            verdict, why = hand[row["decl"]]
+            out.append(f"\n- **read as {verdict}** (hand): {why}\n")
+        else:
+            out.append("\n- **not read**\n")
+    if args.details:
+        readable = sum(1 for r in sample if details.get(r["decl"], {}).get("stated"))
+        if readable < len(sample):
+            print(f"# {len(sample) - readable} of {len(sample)} have no statement",
+                  file=sys.stderr)
+        if readable == 0:
+            raise SystemExit(
+                "no sampled row has a statement. An empty gate and a gate over "
+                "candidates that are all artefacts print the same document.")
+
+    if args.pairs_out:
+        args.pairs_out.write_text("".join(
+            json.dumps({"decl": r["decl"], "which": r["entry"]["stronger_arg"],
+                        "module": r.get("module", "")}) + "\n" for r in sample))
+        print(f"wrote {args.pairs_out}", file=sys.stderr)
+
+    text = "\n".join(out) + "\n"
+    if args.out:
+        args.out.write_text(text)
+        print(f"wrote {args.out}", file=sys.stderr)
+    else:
+        print(text)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

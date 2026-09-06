@@ -1,0 +1,82 @@
+{
+ "population": "Mathlib at the pinned revision",
+ "survivor_theorems": 595,
+ "joined_to_corpus": 571,
+ "not_found_in_corpus": 24,
+ "survivors": {
+  "n": 571,
+  "median": 1,
+  "mean": 2.34,
+  "cited_never": 174,
+  "cited_once_or_less": 373,
+  "p25": 0,
+  "p75": 2,
+  "p90": 4,
+  "max": 193,
+  "never_cited_share": 0.3047,
+  "never_cited_wilson95": [
+   0.2684,
+   0.3437
+  ]
+ },
+ "baseline_all_other_theorems": {
+  "n": 275453,
+  "median": 1,
+  "mean": 4.13,
+  "cited_never": 127308,
+  "cited_once_or_less": 193731,
+  "p25": 0,
+  "p75": 2,
+  "p90": 5,
+  "max": 6730,
+  "never_cited_share": 0.4622,
+  "never_cited_wilson95": [
+   0.4603,
+   0.464
+  ]
+ },
+ "baseline_excluding_generated": {
+  "n": 252599,
+  "median": 1,
+  "mean": 4.46,
+  "cited_never": 108362,
+  "cited_once_or_less": 172618,
+  "p25": 0,
+  "p75": 2,
+  "p90": 5,
+  "max": 6730,
+  "never_cited_share": 0.429,
+  "never_cited_wilson95": [
+   0.4271,
+   0.4309
+  ]
+ },
+ "baseline_same_modules_as_survivors": {
+  "n": 20125,
+  "median": 1,
+  "mean": 4.28,
+  "cited_never": 7592,
+  "cited_once_or_less": 12793,
+  "p25": 0,
+  "p75": 2,
+  "p90": 6,
+  "max": 4249,
+  "never_cited_share": 0.3772,
+  "never_cited_wilson95": [
+   0.3706,
+   0.384
+  ]
+ },
+ "survivor_modules": 325,
+ "generated_excluded": 22854,
+ "caveat": "Survivors cluster by module and by author, so these are not independent trials and no p-value is quoted. The Wilson intervals are unclustered and are therefore narrower than the truth. The sibling's own density work makes the same correction and reports the clustered figure only; the same correction is owed here before anything is published.",
+ "median_ratio": 1.0,
+ "headline": {
+  "never_cited_survivors": 0.3047,
+  "never_cited_baseline_clean": 0.429,
+  "mean_survivors": 2.34,
+  "mean_baseline_clean": 4.46,
+  "max_survivors": 193,
+  "max_baseline_clean": 6730
+ }
+}

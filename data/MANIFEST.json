@@ -1,0 +1,56 @@
+{
+  "generated": "2026-09-06T16:56:01Z",
+  "project": "unstated-conclusions",
+  "note": "Every number this project quotes lives in this file. A row is relative to the corpus revision below; a row that fails to verify against a different revision says nothing about this export.",
+  "corpora": [
+    {
+      "corpus": "Mathlib",
+      "revision": "0df444a360eaa60ab8c11dca51a86af692955474",
+      "describes": "chore: bump toolchain to v4.33.1",
+      "toolchain": "leanprover/lean4:v4.33.1",
+      "project_path": null
+    }
+  ],
+  "tauceti": "not yet exported (gated): the sibling's census and prior-art gate have not caught up, and exporting now would divide a gated numerator by an ungated denominator",
+  "consumed": {
+    "from": "unused-assumptions",
+    "upstream_manifest_generated": "2026-09-04T03:31:58Z",
+    "upstream_revision": "0df444a360eaa60ab8c11dca51a86af692955474",
+    "id_scheme": "sha256('module|theorem|binder_index|to_class')[:16]; stable across runs; contains no revision and no corpus",
+    "key_scheme": "corpus:module:theorem:binder -- deterministic, and the join key across exports. Module is included because theorem names are not unique across modules",
+    "files": [
+      {
+        "path": "survivors.jsonl",
+        "present": true,
+        "bytes": 749265,
+        "sha256": "d855dc9d7676c7fe975c2edfbfbed28de7bea948aa332d757635f0ff907270f6"
+      },
+      {
+        "path": "breaks.jsonl.gz",
+        "present": true,
+        "bytes": 5555642,
+        "sha256": "c35b959b756b3f3078f5756c08f9294fdffa7d579d7bd6def27ef45e9428df50"
+      }
+    ]
+  },
+  "table": {
+    "path": "weakenings.json",
+    "sha256": "997d0a5ed93bda7a37a8485374fbaf79cbf88717939c74618aa7f9e6a7369c82",
+    "entries": 22
+  },
+  "metaprogram": {
+    "path": "lean/Traverse.lean",
+    "sha256": "b6beb8428d255085ca83a2d805a0ed97df68ad8793cb2fee6c8af444f984931d"
+  },
+  "part1_population": "unused-assumptions survivors (Mathlib)",
+  "part1_rows": 645,
+  "part1_theorems": 595,
+  "part1_complete": true,
+  "part1_verdicts": {
+    "context": 1,
+    "root_not_weakening": 633,
+    "strengthens": 9,
+    "unchained": 1,
+    "witness": 1
+  }
+}

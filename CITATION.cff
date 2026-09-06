@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "unstated-conclusions: a library-scale audit of conclusions weaker than their proofs"
+abstract: >-
+  Reads the root of every proof term in a pinned Mathlib revision and asks
+  whether the final step was a weakening lemma. If it was, the proof already
+  established a stronger statement and discarded it; that statement is a subterm
+  and arrives with its own proof. The dual of unused-assumptions, which asks the
+  same question about hypotheses.
+authors:
+  - family-names: Perassi
+    given-names: Carlo
+license: Apache-2.0
+repository-code: "https://github.com/unstated-conclusions"
+type: software
